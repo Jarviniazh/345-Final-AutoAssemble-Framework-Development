@@ -5,16 +5,16 @@ namespace seneca{
     class CustomerOrder {
         struct Item
         {
-            std::string m_itemName;
+            std::string m_itemName{};
             size_t m_serialNumber{0};
             bool m_isFilled{false};
 
             Item(const std::string& src) : m_itemName(src) {};
         };
-        std::string m_name; // the name of the customer (e.g., John, Sara, etc)
-        std::string m_product; // the name of the product being assembled (e.g., Desktop, Laptop, etc)
-        size_t m_cntItem; //a count of the number of items in the customer's order
-        Item** m_lstItem; // a dynamically allocated array of pointers.
+        std::string m_name{}; // the name of the customer (e.g., John, Sara, etc)
+        std::string m_product{}; // the name of the product being assembled (e.g., Desktop, Laptop, etc)
+        size_t m_cntItem{}; //a count of the number of items in the customer's order
+        Item** m_lstItem{}; // a dynamically allocated array of pointers.
         //Class Variable
         static size_t m_widthField; // the maximum width of a field, used for display purposes
 
