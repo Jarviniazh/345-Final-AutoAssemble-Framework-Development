@@ -2,15 +2,16 @@
 #define SENECA_WORKSTATION_H
 #include <deque>
 #include "CustomerOrder.h"
+#include "Station.h"
 
 namespace seneca
 {
-	std::deque<CustomerOrder> g_pending{}; //the orders to be placed onto the assembly line at the first station.
-	std::deque<CustomerOrder> g_completed{}; //the orders that have been removed from the last station and have been completely filled
-	std::deque<CustomerOrder> g_incomplete{}; //the orders that have been removed from the last station and could not be filled completely
+	extern std::deque<CustomerOrder> g_pending; //the orders to be placed onto the assembly line at the first station.
+	extern std::deque<CustomerOrder> g_completed; //the orders that have been removed from the last station and have been completely filled
+	extern std::deque<CustomerOrder> g_incomplete; //the orders that have been removed from the last station and could not be filled completely
 
 
-	class Workstation
+	class Workstation : public Station
 	{
 		std::deque<CustomerOrder> m_orders{}; //These are orders that have been placed on this station to receive service (or already received service).
 		Workstation* m_pNextStation{}; //a pointer to the next Workstation on the assembly line.
@@ -18,6 +19,11 @@ namespace seneca
 		Workstation() {};
 		//a custom 1-argument constructor
 		Workstation(const std::string&);
+		//the object cannot be copied or moved
+		Workstation(const Workstation&) = delete;
+		Workstation(Workstation&&) = delete;
+		Workstation& operator=(const Workstation&) = delete;
+		Workstation& operator=(Workstation&&) = delete;
 		//this modifier fills the order at the front of the queue if there are CustomerOrders in the queue; otherwise, does nothing.
 		void fill(std::ostream& os);
 		// attempts to move the order order at the front of the queue to the next station in the assembly line
