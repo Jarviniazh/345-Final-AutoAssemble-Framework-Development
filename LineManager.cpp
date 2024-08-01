@@ -10,7 +10,6 @@ namespace seneca
 	//this constructor receives the name of the file that identifies the active stations on the assembly line and the collection of workstations available for configuring the assembly line.
 	LineManager::LineManager(const std::string& file, const std::vector<Workstation*>& stations)
 	{
-
 		std::ifstream ofile(file);
 		if (!ofile)
 			throw "Failed to open the file: " + file;
@@ -27,30 +26,9 @@ namespace seneca
             bool more = true;
 
             std::string firstStationName = util.extractToken(line, next_pos, more);
-            if (!more) 
+            //if it is the last station
+			if (!more) 
             { 
-                // end station
-				/*for (auto& station : stations) 
-                {
-                    if (station->getItemName() == firstStationName) 
-                    {
-                        endStations.push_back(station);
-                        m_activeLine.push_back(station);
-                        break;
-                    }
-                }*/
-
-                //std::for_each(stations.begin(), stations.end(), [&](Workstation* station)
-                //    {
-                //        if (station->getItemName() == firstStationName)
-                //        {
-                //            endStations.push_back(station);
-                //            m_activeLine.push_back(station);
-                //        }
-                //    });
-
-                //continue;
-
                 auto it = std::find_if(stations.begin(), stations.end(), [&](Workstation* station) {
                     return station->getItemName() == firstStationName;
                     });
@@ -67,19 +45,6 @@ namespace seneca
 	            std::string nextStationName = util.extractToken(line, next_pos, more);
 				Workstation* firstStation = nullptr;
 				Workstation* nextStation = nullptr;
-
-                // Find the matching workstations in the vector
-				//for (auto& station : stations) 
-				//{
-				//    if (station->getItemName() == firstStationName)
-				//    {
-				//        firstStation = station;
-				//    }
-				//    if (station->getItemName() == nextStationName) 
-				//    {
-				//        nextStation = station;
-				//    }
-				//}
 
                 std::for_each(stations.begin(), stations.end(), [&](Workstation* station)
                     {
@@ -102,20 +67,6 @@ namespace seneca
         // Check number of end stations
         if (endStations.size() != 1) 
             throw "Multiple end stations detected OR Missing the end station";
-        
-
-        //identifies the first station in the assembly line and stores its address in the m_firstStation attribute.
-        //for (auto& station : m_activeLine) 
-        //{
-        //    if (std::find(nextStations.begin(), nextStations.end(), station) == nextStations.end()) 
-        //    {
-        //        if (m_firstStation != nullptr) 
-        //        {
-        //            throw "Multiple first stations detected";
-        //        }
-        //        m_firstStation = station;
-        //    }
-        //}
 
         std::for_each(m_activeLine.begin(), m_activeLine.end(), [&](Workstation* station) {
             if (std::find(nextStations.begin(), nextStations.end(), station) == nextStations.end()) {

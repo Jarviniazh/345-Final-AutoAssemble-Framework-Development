@@ -1,12 +1,3 @@
-// Name: Jarvinia Zhao
-// Seneca Student ID: 143013233
-// Seneca email: jzhao169@myseneca.ca
-// Date of completion: 2024-07-19
-//
-// I confirm that I am the only author of this file
-//   and the content was created entirely by me.
-
-
 #include <iostream>
 #include <string>
 #include <exception>
