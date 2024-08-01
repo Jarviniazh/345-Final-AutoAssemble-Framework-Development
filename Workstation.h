@@ -2,7 +2,6 @@
 #define SENECA_WORKSTATION_H
 #include <deque>
 #include "CustomerOrder.h"
-#include "Station.h"
 
 namespace seneca
 {
@@ -19,11 +18,13 @@ namespace seneca
 		Workstation() {};
 		//a custom 1-argument constructor
 		Workstation(const std::string&);
+
 		//the object cannot be copied or moved
 		Workstation(const Workstation&) = delete;
 		Workstation(Workstation&&) = delete;
 		Workstation& operator=(const Workstation&) = delete;
 		Workstation& operator=(Workstation&&) = delete;
+
 		//this modifier fills the order at the front of the queue if there are CustomerOrders in the queue; otherwise, does nothing.
 		void fill(std::ostream& os);
 		// attempts to move the order order at the front of the queue to the next station in the assembly line

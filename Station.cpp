@@ -1,3 +1,11 @@
+// Name: Jarvinia Zhao
+// Seneca Student ID: 143013233
+// Seneca email: jzhao169@myseneca.ca
+// Date of completion: 2024-07-13
+//
+// I confirm that I am the only author of this file
+//   and the content was created entirely by me.
+
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -57,8 +65,7 @@ namespace seneca
 	//inserts information about the current object into stream os.
 	void Station::display(std::ostream& os, bool full) const
 	{
-
-		os << std::setw(3) << std::setfill('0') << m_id << " | "
+		os << std::setw(3) << std::right << std::setfill('0') << m_id << " | "
 			<< std::setw(m_widthField) << std::setfill(' ') << std::left << m_name << " | "
 			<< std::setw(6) << std::setfill('0') << std::right << m_serial << " | " << std::setfill(' ');
 

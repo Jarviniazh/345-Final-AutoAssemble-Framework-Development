@@ -4,9 +4,9 @@
 
 namespace seneca
 {
-	std::deque<CustomerOrder> g_pending;
-	std::deque<CustomerOrder> g_completed;
-	std::deque<CustomerOrder> g_incomplete;
+	std::deque<CustomerOrder> g_pending{};
+	std::deque<CustomerOrder> g_completed{};
+	std::deque<CustomerOrder> g_incomplete{};
 
 	//a custom 1-argument constructor
 	Workstation::Workstation(const std::string& str) : Station(str) {};
@@ -15,43 +15,42 @@ namespace seneca
 	void Workstation::fill(std::ostream& os)
 	{
 		if (!m_orders.empty())
-		{
 			m_orders.front().fillItem(*this, os);
-		}
 	}
 
 	// attempts to move the order order at the front of the queue to the next station in the assembly line
 	bool Workstation::attemptToMoveOrder()
 	{
-		if (m_orders.empty()) 
-			return false;
-
 		bool moved{false};
-		CustomerOrder& order = m_orders.front();
 
-		//if the order requires no more service at this station or cannot be filled (not enough inventory), move it to the next station
-		if(order.isItemFilled(getItemName()) || getQuantity() == 0)
+		if (!m_orders.empty())
 		{
-			if(m_pNextStation != nullptr)
+			CustomerOrder& order = m_orders.front();
+			//if the order requires no more service at this station or cannot be filled (not enough inventory), move it to the next station
+			if(order.isItemFilled(getItemName()) || getQuantity() == 0)
 			{
-				*m_pNextStation += std::move(order);
-				m_orders.pop_front();
-				moved = true;
-			}
-			else
-			{
-				if(order.isOrderFilled())
+				if(m_pNextStation != nullptr)
 				{
-					g_completed.push_back(std::move(order));
-					m_orders.pop_front();
+					*m_pNextStation += std::move(order);
 				}
 				else
 				{
-					g_incomplete.push_back(std::move(order));
-					m_orders.pop_front();
+					if(order.isOrderFilled())
+					{
+						g_completed.push_back(std::move(order));
+						//std::cout << "Moved to completed" << std::endl;
+					}
+					else
+					{
+						g_incomplete.push_back(std::move(order));
+						//std::cout << "Moved to incompleted" << std::endl;
+					}
 				}
+				m_orders.pop_front();
+				moved = true;
 			}
 		}
+
 		return moved;
 	}
 
@@ -70,13 +69,14 @@ namespace seneca
 	//inserts the name of the Item for which the current object is responsible into stream os
 	void Workstation::display(std::ostream& os) const
 	{
+		os << getItemName() << " --> ";
 		if (m_pNextStation != nullptr)
 		{
-			os << getItemName() << " --> " << m_pNextStation->getItemName() << "\n";
+			os << m_pNextStation->getItemName() << "\n";
 		}
 		else
 		{
-			os << getItemName() << " --> End of Line" << "\n";
+			os << "End of Line\n";
 		}
 	}
 

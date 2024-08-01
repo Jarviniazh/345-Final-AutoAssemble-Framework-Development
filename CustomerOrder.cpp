@@ -1,3 +1,12 @@
+// Name: Jarvinia Zhao
+// Seneca Student ID: 143013233
+// Seneca email: jzhao169@myseneca.ca
+// Date of completion: 2024-07-19
+//
+// I confirm that I am the only author of this file
+//   and the content was created entirely by me.
+
+
 #include <iostream>
 #include <string>
 #include <exception>
@@ -17,7 +26,7 @@ namespace seneca{
         bool more{};
         m_name = util.extractToken(order, next_pos, more);
         m_product = util.extractToken(order, next_pos, more);
-        m_cntItem = std::count_if(order.begin(), order.end(), [&](char c){return c == util.getDelimiter();}) - 1;
+        m_cntItem = std::count_if(order.begin(), order.end(), [=](char c){return c == util.getDelimiter();}) - 1;
         m_lstItem = new Item*[m_cntItem];
         for(auto i = 0u; i < m_cntItem; ++i)
             m_lstItem[i] = new Item(util.extractToken(order, next_pos, more));
@@ -56,7 +65,6 @@ namespace seneca{
             source.m_lstItem = nullptr;
         }
         return *this;
-
     }
 
     //a destructor
@@ -86,7 +94,6 @@ namespace seneca{
             {
             	if (!m_lstItem[i]->m_isFilled)
 					return false;
-                
             }
         }
         return true;
@@ -121,7 +128,9 @@ namespace seneca{
         os << m_name << " - " << m_product << std::endl;
         for(auto i = 0u; i < m_cntItem; ++i)
         {
-	        os << "[" << std::setw(6) << std::setfill('0')<< m_lstItem[i]->m_serialNumber << "] " << std::setw(m_widthField) << std::left << std::setfill(' ') << m_lstItem[i]->m_itemName << " - ";
+	        os << "[" << std::setw(6) << std::right << std::setfill('0')<< m_lstItem[i]->m_serialNumber << "] " << std::setw(m_widthField)
+        		<< std::left << std::setfill(' ') << m_lstItem[i]->m_itemName << " - ";
+
             if(m_lstItem[i]->m_isFilled)
 			{
 				os << "FILLED" << std::endl;
