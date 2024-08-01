@@ -8,9 +8,9 @@ namespace seneca
 {
 	class LineManager
 	{
-		std::vector<Workstation*> m_activeLine; //the collection of workstations for the current assembly line.
-		size_t m_cntCustomerOrder;  //the total number of CustomerOrder objects
-		Workstation* m_firstStation; // points to the first active station on the current line
+		std::vector<Workstation*> m_activeLine{}; //the collection of workstations for the current assembly line.
+		size_t m_cntCustomerOrder{};  //the total number of CustomerOrder objects
+		Workstation* m_firstStation{}; // points to the first active station on the current line
 	public:
 		LineManager() {};
 		//this constructor receives the name of the file that identifies the active stations on the assembly line and the collection of workstations available for configuring the assembly line.

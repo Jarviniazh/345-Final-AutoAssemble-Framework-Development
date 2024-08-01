@@ -1,10 +1,12 @@
 #include <iostream>
-#include <algorithm>
+
 #include "Workstation.h"
 
 namespace seneca
 {
-	//m_orders push_back and pop_front
+	std::deque<CustomerOrder> g_pending;
+	std::deque<CustomerOrder> g_completed;
+	std::deque<CustomerOrder> g_incomplete;
 
 	//a custom 1-argument constructor
 	Workstation::Workstation(const std::string& str) : Station(str) {};
