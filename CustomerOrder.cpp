@@ -70,9 +70,8 @@ namespace seneca{
     //a destructor
     CustomerOrder::~CustomerOrder(){
         for (auto i = 0u; i < m_cntItem; ++i)
-        {
-            delete m_lstItem[i];
-        }
+        	delete m_lstItem[i];
+        
         delete [] m_lstItem;
     }
 
@@ -116,9 +115,8 @@ namespace seneca{
                     break;
 				}
 				else
-				{
 					os << "    Unable to fill " << m_name << ", " << m_product << " [" << m_lstItem[i]->m_itemName << "]" << std::endl;
-				}
+				
 			}
 		}
     }

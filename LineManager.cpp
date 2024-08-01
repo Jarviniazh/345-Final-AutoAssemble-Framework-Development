@@ -19,6 +19,7 @@ namespace seneca
         std::vector<Workstation*> nextStations{};
         std::vector<Workstation*> endStations{}; 
 
+        //loads the contents of the file
         while (std::getline(ofile, line)) 
         {
             Utilities util;
@@ -29,74 +30,113 @@ namespace seneca
             if (!more) 
             { 
                 // end station
-                for (auto& ws : stations) 
+				/*for (auto& station : stations) 
                 {
-                    if (ws->getItemName() == firstStationName) 
+                    if (station->getItemName() == firstStationName) 
                     {
-                        endStations.push_back(ws);
-                        m_activeLine.push_back(ws);
+                        endStations.push_back(station);
+                        m_activeLine.push_back(station);
                         break;
                     }
-                }
-                continue; 
-            }
+                }*/
 
-            std::string nextStationName = util.extractToken(line, next_pos, more);
-            Workstation* firstStation = nullptr;
-            Workstation* nextStation = nullptr;
+                //std::for_each(stations.begin(), stations.end(), [&](Workstation* station)
+                //    {
+                //        if (station->getItemName() == firstStationName)
+                //        {
+                //            endStations.push_back(station);
+                //            m_activeLine.push_back(station);
+                //        }
+                //    });
 
-            // Find the matching workstations in the vector
-            for (auto& ws : stations) 
-            {
-                if (ws->getItemName() == firstStationName)
+                //continue;
+
+                auto it = std::find_if(stations.begin(), stations.end(), [&](Workstation* station) {
+                    return station->getItemName() == firstStationName;
+                    });
+
+                if (it != stations.end()) 
                 {
-                    firstStation = ws;
+                    endStations.push_back(*it);
+                    m_activeLine.push_back(*it);
                 }
-                if (ws->getItemName() == nextStationName) 
-                {
-                    nextStation = ws;
-                }
-            }
 
-            if (firstStation && nextStation) 
+            }
+            else
             {
-                firstStation->setNextStation(nextStation);
-                m_activeLine.push_back(firstStation);
-                nextStations.push_back(nextStation);
+	            std::string nextStationName = util.extractToken(line, next_pos, more);
+				Workstation* firstStation = nullptr;
+				Workstation* nextStation = nullptr;
+
+                // Find the matching workstations in the vector
+				//for (auto& station : stations) 
+				//{
+				//    if (station->getItemName() == firstStationName)
+				//    {
+				//        firstStation = station;
+				//    }
+				//    if (station->getItemName() == nextStationName) 
+				//    {
+				//        nextStation = station;
+				//    }
+				//}
+
+                std::for_each(stations.begin(), stations.end(), [&](Workstation* station)
+                    {
+                        if (station->getItemName() == firstStationName)
+                            firstStation = station;
+                        else if (station->getItemName() == nextStationName)
+                            nextStation = station;
+                    });
+
+                //stores the address of the next workstation in each element of the collection
+                if (firstStation && nextStation)
+                {
+                    firstStation->setNextStation(nextStation);
+                    m_activeLine.push_back(firstStation);
+                    nextStations.push_back(nextStation);
+                }
             }
         }
 
         // Check number of end stations
         if (endStations.size() != 1) 
-            throw "Multiple end stations detected OR Missing end station";
+            throw "Multiple end stations detected OR Missing the end station";
         
 
-        // Determine the start station
-        m_firstStation = nullptr;
-        for (auto& station : m_activeLine) 
-        {
-            if (std::find(nextStations.begin(), nextStations.end(), station) == nextStations.end()) 
-            {
-                if (m_firstStation != nullptr) 
-                {
+        //identifies the first station in the assembly line and stores its address in the m_firstStation attribute.
+        //for (auto& station : m_activeLine) 
+        //{
+        //    if (std::find(nextStations.begin(), nextStations.end(), station) == nextStations.end()) 
+        //    {
+        //        if (m_firstStation != nullptr) 
+        //        {
+        //            throw "Multiple first stations detected";
+        //        }
+        //        m_firstStation = station;
+        //    }
+        //}
+
+        std::for_each(m_activeLine.begin(), m_activeLine.end(), [&](Workstation* station) {
+            if (std::find(nextStations.begin(), nextStations.end(), station) == nextStations.end()) {
+                if (m_firstStation != nullptr) {
                     throw "Multiple first stations detected";
                 }
                 m_firstStation = station;
             }
-        }
+            });
 
-        if (!m_firstStation) 
-        {
-            throw "Missing first station";
-        }
+        if (m_firstStation == nullptr) 
+            throw "Missing the first station";
+
+        //This function also updates the attribute that holds the total number of orders in the g_pending queue.
         m_cntCustomerOrder = g_pending.size();
-
 	}
 
 	//this modifier reorders the workstations present in the instance variable m_activeLine(loaded by the constructor) and stores the reordered collection in the same instance variable.
 	void LineManager::reorderStations()
 	{
-        //start from the first station
+        //start with the first station
 		Workstation* currentStation = m_firstStation;
         std::vector<Workstation*> orderedStations;
 
@@ -124,14 +164,12 @@ namespace seneca
         }
 
         //for each station on the line, executes one fill operation
-        for (auto& station : m_activeLine) {
+        for (auto& station : m_activeLine) 
             station->fill(os);
-        }
 
         //for each station on the line, attempts to move an order down the line
-        for (auto& station : m_activeLine) {
+        for (auto& station : m_activeLine) 
             station->attemptToMoveOrder();
-        }
 
         //std::cout << "incompleted: " << g_incomplete.size() << std::endl;
         //std::cout << "completed: " << g_completed.size() << std::endl;
@@ -145,6 +183,5 @@ namespace seneca
 	{
 		for(auto& station : m_activeLine)
 			station->display(os);
-		
 	}
 }
